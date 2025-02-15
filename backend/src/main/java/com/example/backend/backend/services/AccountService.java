@@ -1,6 +1,7 @@
 package com.example.backend.backend.services;
 
 import com.example.backend.backend.dto.AccountDTO;
+import com.example.backend.backend.dto.UpdateAccountDTO;
 import com.example.backend.backend.model.AccountModel;
 import com.example.backend.backend.model.UsersModel;
 import com.example.backend.backend.repository.AccountRepository;
@@ -85,11 +86,11 @@ public class AccountService {
     }
 
     // Actualizar una cuenta por su id
-    public AccountModel updateAccount(String id, AccountModel accountDetail)
+    public AccountModel updateAccount(String id, UpdateAccountDTO updateAccountDTO)
     {
         AccountModel existingAccount = getAccountById(id);
-        existingAccount.setAccountType(accountDetail.getAccountType());
-        existingAccount.setBalance(accountDetail.getBalance());
+        existingAccount.setAccountType(updateAccountDTO.getAccountType());
+        existingAccount.setBalance(updateAccountDTO.getBalance());
 
         return accountRepository.save(existingAccount);
     }

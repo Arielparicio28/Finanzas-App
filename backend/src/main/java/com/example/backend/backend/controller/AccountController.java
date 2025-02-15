@@ -2,6 +2,7 @@ package com.example.backend.backend.controller;
 
 import com.example.backend.backend.dto.AccountDTO;
 import com.example.backend.backend.dto.ApiResponse;
+import com.example.backend.backend.dto.UpdateAccountDTO;
 import com.example.backend.backend.model.AccountModel;
 import com.example.backend.backend.model.UsersModel;
 import com.example.backend.backend.services.AccountService;
@@ -69,9 +70,9 @@ public class AccountController {
   // Actualizar cuenta
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse> updateAccount(@PathVariable String id, @RequestBody AccountModel accountDetail)
+    public ResponseEntity<ApiResponse> updateAccount(@PathVariable String id,@Valid @RequestBody UpdateAccountDTO updateAccountDTO)
     {
-        AccountModel updatedAccount = accountService.updateAccount(id,accountDetail);
+        AccountModel updatedAccount = accountService.updateAccount(id,updateAccountDTO);
         ApiResponse response = new ApiResponse("Cuenta actualizada con exito",updatedAccount);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
