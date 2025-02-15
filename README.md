@@ -1,0 +1,1 @@
+# Practica-Hakaton-2025
