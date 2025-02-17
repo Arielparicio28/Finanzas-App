@@ -17,10 +17,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 // Configuramos la autorización de peticiones
                 .authorizeHttpRequests(auth -> auth
-                        // Permitimos el acceso a cualquier endpoint que empiece con /api/v1/users
+                        // Permitimos el acceso a cualquier endpoint de los siguientes
                         .requestMatchers("/api/v1/users/**").permitAll()
-                        // Permitimos el acceso a cualquier endpoint que empiece con /api/v1/accounts
                         .requestMatchers("/api/v1/accounts/**").permitAll()
+                        .requestMatchers("/v3/api-docs").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/v3/api-docs/swagger-config").permitAll()
                         // Todas las demás solicitudes requieren autenticación
                         .anyRequest().authenticated()
                 )

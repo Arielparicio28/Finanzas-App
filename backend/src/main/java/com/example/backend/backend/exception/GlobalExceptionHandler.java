@@ -2,6 +2,7 @@ package com.example.backend.backend.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,6 +41,15 @@ public class GlobalExceptionHandler {
         // Aquí puedes agregar logging o personalizar el mensaje de error según sea necesario
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error interno del servidor.");
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    //  Captura cualquier HttpMessageNotReadableException (que ocurre cuando un enum no es valido).
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, String>> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Formato de JSON incorrecto o valor inválido.");
+        response.put("detalle", ex.getMostSpecificCause().getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     // Clase para representar la respuesta de error de forma estructurada

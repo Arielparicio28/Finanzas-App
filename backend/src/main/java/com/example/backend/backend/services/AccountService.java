@@ -35,25 +35,30 @@ public class AccountService {
     //Metodo para crear una cuenta
     public AccountModel createAccount(AccountDTO accountDTO) {
         // Validar que el usuario exista (se asume que el ID se pasa como String)
-        UsersModel user = userRepository.findById(accountDTO.getUserId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
 
-        // Convertir el userId a ObjectId
-        ObjectId userIdObj = new ObjectId(accountDTO.getUserId());
+          UsersModel user = userRepository.findById(accountDTO.getUserId())
+                  .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+        try {
+          // Convertir el userId a ObjectId
+          ObjectId userIdObj = new ObjectId(accountDTO.getUserId());
+          // Crear la cuenta y asignar las fechas
+          AccountModel account = new AccountModel();
+          account.setUserId(userIdObj);
+          // Generar el número de cuenta automáticamente
+          String generatedNumber = CardNumberGenerator.generateCardNumber();
+          account.setAccountNumber(generatedNumber);
+          account.setAccountType(accountDTO.getAccountType());
+          account.setBalance(accountDTO.getBalance());
+          account.setCurrency(accountDTO.getCurrency());
+          account.setCreatedAt(new Date());
+          account.setUpdatedAt(new Date());
 
-        // Crear la cuenta y asignar las fechas
-        AccountModel account = new AccountModel();
-        account.setUserId(userIdObj);
-        // Generar el número de cuenta automáticamente
-        String generatedNumber = CardNumberGenerator.generateCardNumber();
-        account.setAccountNumber(generatedNumber);
-        account.setAccountType(accountDTO.getAccountType());
-        account.setBalance(accountDTO.getBalance());
-        account.setMoneda(accountDTO.getMoneda());
-        account.setCreatedAt(new Date());
-        account.setUpdatedAt(new Date());
-
-        return accountRepository.save(account);
+          return accountRepository.save(account);
+      } catch (Exception e) {
+          throw new ResponseStatusException(
+                  HttpStatus.INTERNAL_SERVER_ERROR, "Error al crear cuenta verifica que los datos introducidos son correctos.", e
+          );
+      }
     }
 
     // Metodo para obtener la informacion de un usuario por el id de su cuenta
@@ -80,19 +85,27 @@ public class AccountService {
     //Eliminar una cuenta por su id
     public AccountModel deleteAccount(String id)
     {
-        AccountModel accountExist = getAccountById(id);
-         accountRepository.delete(accountExist);
-        return accountExist;
+        try {
+            AccountModel accountExist = getAccountById(id);
+            accountRepository.delete(accountExist);
+            return accountExist;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // Actualizar una cuenta por su id
     public AccountModel updateAccount(String id, UpdateAccountDTO updateAccountDTO)
     {
-        AccountModel existingAccount = getAccountById(id);
-        existingAccount.setAccountType(updateAccountDTO.getAccountType());
-        existingAccount.setBalance(updateAccountDTO.getBalance());
+        try {
+            AccountModel existingAccount = getAccountById(id);
+            existingAccount.setAccountType(updateAccountDTO.getAccountType());
+            existingAccount.setBalance(updateAccountDTO.getBalance());
 
-        return accountRepository.save(existingAccount);
+            return accountRepository.save(existingAccount);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

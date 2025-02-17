@@ -2,6 +2,7 @@ package com.example.backend.backend.model;
 
 
 import com.example.backend.backend.enums.AccountTypes;
+import com.example.backend.backend.enums.CurrencyType;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,7 +18,7 @@ public class AccountModel {
     private String accountNumber;
     private AccountTypes accountType;
     private Double balance;
-    private String moneda;
+    private CurrencyType currency;
     private Date createdAt;
     private Date updatedAt;
 
@@ -61,12 +62,12 @@ public class AccountModel {
         this.balance = balance;
     }
 
-    public String getMoneda() {
-        return moneda;
+    public CurrencyType getCurrency() {
+        return currency;
     }
 
-    public void setMoneda(String moneda) {
-        this.moneda = moneda;
+    public void setCurrency(CurrencyType currency) {
+        this.currency = currency;
     }
 
     public Date getCreatedAt() {

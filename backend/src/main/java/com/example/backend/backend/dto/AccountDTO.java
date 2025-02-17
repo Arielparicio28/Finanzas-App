@@ -1,6 +1,7 @@
 package com.example.backend.backend.dto;
 
 import com.example.backend.backend.enums.AccountTypes;
+import com.example.backend.backend.enums.CurrencyType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -15,8 +16,9 @@ public class AccountDTO {
     @NotNull(message = "El balance es obligatorio ")
     private Double balance;
 
-    @NotBlank(message = "La moneda es de tipo EUR || USD, etc.")
-    private String moneda;
+    @NotNull(message = "La moneda es de tipo EUR || USD, etc.")
+    private CurrencyType currency;
+
 
     public @NotBlank(message = "El ID del usuario es obligatorio") String getUserId() {
         return userId;
@@ -42,11 +44,11 @@ public class AccountDTO {
         this.balance = balance;
     }
 
-    public @NotBlank(message = "La moneda es de tipo EUR || USD, etc.") String getMoneda() {
-        return moneda;
+    public @NotNull(message = "La moneda es de tipo EUR || USD, etc.") CurrencyType getCurrency() {
+        return currency;
     }
 
-    public void setMoneda(@NotBlank(message = "La moneda es de tipo EUR || USD, etc.") String moneda) {
-        this.moneda = moneda;
+    public void setCurrency(@NotNull(message = "La moneda es de tipo EUR || USD, etc.") CurrencyType currency) {
+        this.currency = currency;
     }
 }
