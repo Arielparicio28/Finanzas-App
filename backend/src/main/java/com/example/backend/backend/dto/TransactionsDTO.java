@@ -1,12 +1,10 @@
 package com.example.backend.backend.dto;
 
-import com.example.backend.backend.enums.AccountTypes;
-import com.example.backend.backend.enums.CurrencyType;
+
 import com.example.backend.backend.enums.TransactionType;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+
 
 public class TransactionsDTO
 {
@@ -22,6 +20,9 @@ public class TransactionsDTO
 
     @NotBlank(message = "Categoria del gasto alimentacion,ocio,salario, factura,etc.")
     private String category;
+
+
+    private String description;
 
     public @NotBlank(message = "El ID de la cuenta es obligatorio") String getAccountId() {
         return accountId;
@@ -53,5 +54,13 @@ public class TransactionsDTO
 
     public void setCategory(@NotBlank(message = "Categoria del gasto alimentacion,ocio,salario, factura,etc.") String category) {
         this.category = category;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

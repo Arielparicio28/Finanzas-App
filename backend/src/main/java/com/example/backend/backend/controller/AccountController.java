@@ -26,9 +26,11 @@ public class AccountController {
     private UserService userService;
 
     @GetMapping
-    public List<AccountModel> getAllAccounts()
+    public ResponseEntity<ApiResponse> getAllAccounts()
     {
-        return accountService.getAllAccount();
+        List<AccountModel> accounts = accountService.getAllAccount();
+        ApiResponse response = new ApiResponse("Datos de todas las cuentas",accounts);
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     // Crear una cuenta
@@ -76,17 +78,5 @@ public class AccountController {
         ApiResponse response = new ApiResponse("Cuenta actualizada con exito",updatedAccount);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

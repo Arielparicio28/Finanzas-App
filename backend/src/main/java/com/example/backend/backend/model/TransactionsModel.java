@@ -13,7 +13,6 @@ public class TransactionsModel
 
     @Id
     private ObjectId id;
-
     private ObjectId accountId; // Id de la cuenta asociada.
     private Date dateOfTransaction; //Fecha y hora de la transaccion.
     private Double amount; // positivo para ingreso y negativo para gastos

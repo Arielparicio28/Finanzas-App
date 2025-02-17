@@ -35,8 +35,7 @@ public class AccountService {
     //Metodo para crear una cuenta
     public AccountModel createAccount(AccountDTO accountDTO) {
         // Validar que el usuario exista (se asume que el ID se pasa como String)
-
-          UsersModel user = userRepository.findById(accountDTO.getUserId())
+        UsersModel user = userRepository.findById(accountDTO.getUserId())
                   .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
         try {
           // Convertir el userId a ObjectId
