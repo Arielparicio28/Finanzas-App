@@ -1,0 +1,18 @@
+meta {
+  name: Update Account by Id
+  type: http
+  seq: 3
+}
+
+put {
+  url: http://localhost:8080/api/v1/accounts/67b46d66b83fc82ea7e059ff
+  body: json
+  auth: none
+}
+
+body:json {
+  {   
+        "accountType": "Corriente",
+        "balance": 300.5
+  }
+}

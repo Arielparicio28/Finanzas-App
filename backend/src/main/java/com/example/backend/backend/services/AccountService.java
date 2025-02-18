@@ -5,6 +5,7 @@ import com.example.backend.backend.dto.UpdateAccountDTO;
 import com.example.backend.backend.model.AccountModel;
 import com.example.backend.backend.model.UsersModel;
 import com.example.backend.backend.repository.AccountRepository;
+import com.example.backend.backend.repository.TransactionRepository;
 import com.example.backend.backend.repository.UserRepository;
 import com.example.backend.backend.util.CardNumberGenerator;
 import org.bson.types.ObjectId;
@@ -25,6 +26,10 @@ public class AccountService {
 
     @Autowired
     private UserRepository userRepository;
+
+
+    @Autowired
+    private TransactionRepository transactionRepository;
 
     // Metodo para obtener todas las cuentas
     // List es más efeciente a la hora de buscar datos mejora el rendimiento
@@ -73,11 +78,15 @@ public class AccountService {
 
     //Obtener la información de una cuenta por su Id
     public AccountModel getAccountById(String accountId){
-        ObjectId idObj = new ObjectId(accountId);
-        return accountRepository.findById(idObj)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "La cuenta con el:  " + idObj + " no fue encontrada"
-                ));
+        try {
+            ObjectId idObj = new ObjectId(accountId);
+            return accountRepository.findById(idObj)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "La cuenta con el:  " + idObj + " no fue encontrada"
+                    ));
+        }catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID de cuenta inválido", e);
+        }
     }
 
 
@@ -86,10 +95,16 @@ public class AccountService {
     {
         try {
             AccountModel accountExist = getAccountById(id);
+            transactionRepository.deleteByAccountId(accountExist.getId());
             accountRepository.delete(accountExist);
             return accountExist;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+
+        }   catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID de cuenta inválido", e);
+        }
+
+        catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al eliminar la cuenta", e);
         }
     }
 
@@ -98,12 +113,21 @@ public class AccountService {
     {
         try {
             AccountModel existingAccount = getAccountById(id);
+            if( existingAccount == null)
+            {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El Id no existe");
+            }
+
             existingAccount.setAccountType(updateAccountDTO.getAccountType());
             existingAccount.setBalance(updateAccountDTO.getBalance());
 
             return accountRepository.save(existingAccount);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (ResponseStatusException e) {
+            throw e;
+        }
+        catch (Exception e)
+        {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al eliminar la cuenta", e);
         }
     }
 

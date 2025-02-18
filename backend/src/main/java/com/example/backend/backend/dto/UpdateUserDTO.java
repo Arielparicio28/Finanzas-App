@@ -9,19 +9,23 @@ public class UpdateUserDTO {
     private String username;
 
     @NotNull(message = "El perfil es obligatorio")
-    private ProfileDTO profile;
+    private UpdateProfileDTO profile;
 
     // Getters y setters
-    public String getUsername() {
+
+    public @NotBlank(message = "El nombre de usuario es obligatorio") String getUsername() {
         return username;
     }
-    public void setUsername(String username) {
+
+    public void setUsername(@NotBlank(message = "El nombre de usuario es obligatorio") String username) {
         this.username = username;
     }
-    public ProfileDTO getProfile() {
+
+    public @NotNull(message = "El perfil es obligatorio") UpdateProfileDTO getProfile() {
         return profile;
     }
-    public void setProfile(ProfileDTO profile) {
+
+    public void setProfile(@NotNull(message = "El perfil es obligatorio") UpdateProfileDTO profile) {
         this.profile = profile;
     }
 }

@@ -49,13 +49,19 @@ public class TransactionController {
             @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate)
     {
-             List<TransactionsModel> transiction = transactionService.getTransactionsByDateRange(startDate, endDate);
-             ApiResponse response = new ApiResponse("Filtro de transacciones por fecha",transiction);
+             List<TransactionsModel> transactions = transactionService.getTransactionsByDateRange(startDate, endDate);
+             ApiResponse response = new ApiResponse("Filtro de transacciones por fecha",transactions);
              return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
 
 
+    @GetMapping("/by-user/{userId}")
+    public ResponseEntity<ApiResponse> getTransactionsByUserId(@PathVariable String userId) {
 
+        List<TransactionsModel> transactions = transactionService.getTransactionsByUserId(userId);
+        ApiResponse response = new ApiResponse("Todas las transacciones asociadas al usuario devueltas correctamente",transactions);
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
 
 }

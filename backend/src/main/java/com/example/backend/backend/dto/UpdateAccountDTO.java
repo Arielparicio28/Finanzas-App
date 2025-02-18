@@ -1,7 +1,6 @@
 package com.example.backend.backend.dto;
 
 import com.example.backend.backend.enums.AccountTypes;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public class UpdateAccountDTO {

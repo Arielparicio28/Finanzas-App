@@ -12,7 +12,7 @@ public class TransactionsDTO
     @NotBlank(message = "El ID de la cuenta es obligatorio")
     private String accountId;  // Recibido como String, luego se convertirá a ObjectId
 
-    @NotNull(message = "El amount puede ser + o -")
+    @NotNull(message = "El amount no puede ser nulo")
     private Double amount;
 
     @NotNull(message = "Transaction type es de tipo Credito | Debito ")

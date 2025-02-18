@@ -55,9 +55,11 @@ public class AccountController {
 
     //Obtener una cuenta por su id
     @GetMapping("/{id}")
-    public AccountModel getAccountId(@PathVariable String id)
+    public ResponseEntity<ApiResponse> getAccountId(@PathVariable String id)
     {
-        return accountService.getAccountById(id);
+        AccountModel account =  accountService.getAccountById(id);
+        ApiResponse response = new ApiResponse("Cuenta obtenida correctamente",account);
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     //Eliminar una cuenta por su id
@@ -70,7 +72,6 @@ public class AccountController {
 
 
   // Actualizar cuenta
-
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> updateAccount(@PathVariable String id,@Valid @RequestBody UpdateAccountDTO updateAccountDTO)
     {
