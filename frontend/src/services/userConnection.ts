@@ -5,14 +5,13 @@ import { axiosPrivate } from "./axiosPrivate"
 
 
 export const getAllUsers = async (): Promise<ApiResponse<User[]>> => {
-    const response = await axiosPrivate.get<ApiResponse<User[]>>('/users');
-    return response.data;
+    return await axiosPrivate.get('/users');
+   
   };
 
- export const getOneUser = async (id: string): Promise<User> => {
-    const response = await axiosPrivate.get<ApiResponse<User>>(`/users/${id}`);
-    return response.data.data; // Extraer el usuario de la respuesta
-    //response.data es el ApiResponse, y response.data.data es el usuario en sí
+ export const getOneUser =  (id: string)   => {
+    return  axiosPrivate.get(`/users/${id}`);
+ 
   };
 
 

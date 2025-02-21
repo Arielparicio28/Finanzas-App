@@ -9,7 +9,7 @@ interface User {
   id: string;
   username: string;
   email: string;
-  passwordHash: string;
+  passwordHash?: string;
   profile: Profile;
   createdAt: Date;
   updatedAt: Date;

@@ -1,12 +1,25 @@
 import "./App.css";
-import { RouterProvider } from "react-router-dom";
-import router from "./Router/Router.tsx";
+
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from "./components/NavBar.tsx";
+import Home from "./pages/Home.tsx";
+import UserList from "./pages/UserList.tsx";
+import UserDetail from "./components/UserDetail.tsx";
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-100">
-      <RouterProvider router={router} />
-    </div>
+    <>
+    <Router>
+        <Navbar />
+        <Routes>
+        <Route path='/' element={<Home />} />
+          <Route path='/users' element={<UserList />} />
+          <Route path='/users/:id' element = {<UserDetail/>}/>
+          {/* agregar más rutas aquí */}
+        </Routes>
+    </Router>
+  
+    </>
   );
 }
 
