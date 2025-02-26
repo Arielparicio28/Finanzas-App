@@ -39,30 +39,41 @@ public class AccountService {
 
     //Metodo para crear una cuenta
     public AccountModel createAccount(AccountDTO accountDTO) {
-        // Validar que el usuario exista (se asume que el ID se pasa como String)
-        UsersModel user = userRepository.findById(accountDTO.getUserId())
-                  .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
         try {
-          // Convertir el userId a ObjectId
-          ObjectId userIdObj = new ObjectId(accountDTO.getUserId());
-          // Crear la cuenta y asignar las fechas
-          AccountModel account = new AccountModel();
-          account.setUserId(userIdObj);
-          // Generar el número de cuenta automáticamente
-          String generatedNumber = CardNumberGenerator.generateCardNumber();
-          account.setAccountNumber(generatedNumber);
-          account.setAccountType(accountDTO.getAccountType());
-          account.setBalance(accountDTO.getBalance());
-          account.setCurrency(accountDTO.getCurrency());
-          account.setCreatedAt(new Date());
-          account.setUpdatedAt(new Date());
+            // Validar que el ID del usuario sea un ObjectId válido
+            if (!ObjectId.isValid(accountDTO.getUserId())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID de usuario inválido");
+            }
 
-          return accountRepository.save(account);
-      } catch (Exception e) {
-          throw new ResponseStatusException(
-                  HttpStatus.INTERNAL_SERVER_ERROR, "Error al crear cuenta verifica que los datos introducidos son correctos.", e
-          );
-      }
+            // Convertir el userId de String a ObjectId
+            ObjectId userIdObj = new ObjectId(accountDTO.getUserId());
+
+            // Verificar si el usuario existe en la base de datos
+            UsersModel user = userRepository.findById(userIdObj)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+
+            // Crear la cuenta y asignar los valores
+            AccountModel account = new AccountModel();
+            account.setUserId(userIdObj); // Asignar el ObjectId del usuario
+            account.setAccountNumber(CardNumberGenerator.generateCardNumber()); // Generar número de cuenta
+            account.setAccountType(accountDTO.getAccountType());
+            account.setBalance(accountDTO.getBalance());
+            account.setCurrency(accountDTO.getCurrency());
+            account.setCreatedAt(new Date());
+            account.setUpdatedAt(new Date());
+
+            // Guardar la cuenta en la base de datos
+            return accountRepository.save(account);
+
+        } catch (ResponseStatusException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error al crear cuenta. Verifica que los datos introducidos son correctos.",
+                    e
+            );
+        }
     }
 
     // Metodo para obtener la informacion de un usuario por el id de su cuenta

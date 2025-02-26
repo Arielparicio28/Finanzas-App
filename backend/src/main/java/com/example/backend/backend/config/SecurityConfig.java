@@ -2,35 +2,50 @@ package com.example.backend.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final AuthenticationProvider authenticationProvider;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public SecurityConfig(AuthenticationProvider authenticationProvider, JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.authenticationProvider = authenticationProvider;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+
+    }
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Deshabilitamos CSRF (útil en desarrollo; en producción revisa su configuración)
+                // Deshabilita CSRF para trabajar con una API sin estado (stateless)
                 .csrf(csrf -> csrf.disable())
-                // Configuramos la autorización de peticiones
+
+                // Configuración de permisos para endpoints
                 .authorizeHttpRequests(auth -> auth
-                        // Permitimos el acceso a cualquier endpoint de los siguientes
-                        .requestMatchers("/api/v1/users/**").permitAll()
-                        .requestMatchers("/api/v1/accounts/**").permitAll()
-                        .requestMatchers("/v3/api-docs").permitAll()
-                        .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("/v3/api-docs/swagger-config").permitAll()
-                        .requestMatchers("/api/v1/transaction/**").permitAll()
-                        // Todas las demás solicitudes requieren autenticación
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
+                        .requestMatchers("/health/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                // Deshabilitamos el formulario de login por defecto
-                .formLogin(form -> form.disable())
-                // Deshabilitamos la autenticación básica
-                .httpBasic(httpBasic -> httpBasic.disable());
+
+                // Configuración de la sesión como sin estado
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+
+                // Establece el proveedor de autenticación personalizado
+                .authenticationProvider(authenticationProvider)
+
+                // Añade el filtro JWT antes del filtro de autenticación por defecto
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

@@ -12,7 +12,7 @@ const UserDetail = () => {
     if(id) 
     {
         getOneUser(id).then((response) => {
-            setUser(response.data);
+            setUser(response.data.data);
             console.log("respuesta de la api: " + response.data);
         });
     }
@@ -23,7 +23,6 @@ const UserDetail = () => {
     return (
         <div  className="p-4 max-w-2xl mx-auto">
             <h2 className="text-2xl font-bold mb-4">Detalles del Usuario</h2>
-            <p className="text-gray-600 text-sm">ID: {user.id}</p>
         <p className="text-gray-600 text-sm">Nombre: {user.profile.firstName}</p>
         <p className="text-gray-600 text-sm">Apellido: {user.profile.lastName}</p>
         <p className="text-gray-600 text-sm">Edad: {user.profile.age}</p>

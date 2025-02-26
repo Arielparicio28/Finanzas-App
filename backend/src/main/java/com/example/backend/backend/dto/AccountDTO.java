@@ -4,6 +4,7 @@ import com.example.backend.backend.enums.AccountTypes;
 import com.example.backend.backend.enums.CurrencyType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.bson.types.ObjectId;
 
 public class AccountDTO {
 

@@ -1,3 +1,4 @@
+/*
 package com.example.backend.backend.controller;
 
 import com.example.backend.backend.dto.AccountDTO;
@@ -8,6 +9,7 @@ import com.example.backend.backend.model.UsersModel;
 import com.example.backend.backend.services.AccountService;
 import com.example.backend.backend.services.UserService;
 import jakarta.validation.Valid;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,12 +46,20 @@ public class AccountController {
     // Nuevo endpoint: obtener el usuario asociado a una cuenta
     @GetMapping("/{accountId}/user")
     public ResponseEntity<UsersModel> getUserForAccount(@PathVariable String accountId) {
-        // Obtener la cuenta
+        // Obtener la cuenta asociada
         AccountModel account = accountService.getUserByAccountId(accountId);
-        // Convertir el userId de ObjectId a String
-        String userId = account.getUserId().toHexString();
-        // Obtener el usuario asociado
-        UsersModel user = userService.getUserById(userId);
+
+        if (account == null) {
+            return ResponseEntity.notFound().build(); // Si la cuenta no existe, devolver 404
+        }
+
+        // Obtener el ObjectId del usuario desde la cuenta
+        ObjectId userId = (account.getUserId());
+
+        // Buscar el usuario en la base de datos
+        UsersModel user = userService.getUserById(userId.toHexString())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+
         return ResponseEntity.ok(user);
     }
 
@@ -81,3 +91,4 @@ public class AccountController {
     }
 
 }
+*/

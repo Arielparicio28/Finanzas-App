@@ -4,11 +4,15 @@ import com.example.backend.backend.dto.TransactionsDTO;
 import com.example.backend.backend.enums.TransactionType;
 import com.example.backend.backend.model.AccountModel;
 import com.example.backend.backend.model.TransactionsModel;
+import com.example.backend.backend.model.UsersModel;
 import com.example.backend.backend.repository.AccountRepository;
 import com.example.backend.backend.repository.TransactionRepository;
+import com.example.backend.backend.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,6 +23,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class TransactionService {
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     TransactionRepository transactionRepository;
@@ -153,6 +159,45 @@ public class TransactionService {
 
         // Buscamos todas las transacciones de esas cuentas
         return transactionRepository.findByAccountIds(accountIds);
+    }
+
+    // Obtener todas las transacciones del usuario autenticado
+    public List<TransactionsModel> getAllTransactionsForAuthenticatedUser() {
+        // Obtén el principal (usuario autenticado) desde el contexto de seguridad
+        String username = getAuthenticatedUsername();
+        UsersModel user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+
+        // Usar el userId para obtener las cuentas del usuario
+        List<ObjectId> accountIds = accountRepository.findByUserId(user.getId())
+                .stream()
+                .map(AccountModel::getId)
+                .collect(Collectors.toList());
+
+        if (accountIds.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El usuario no tiene cuentas asociadas.");
+        }
+
+        // Buscar las transacciones de esas cuentas
+        List<TransactionsModel> transactions = transactionRepository.findByAccountIds(accountIds);
+
+        if (transactions.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontraron transacciones para el usuario.");
+        }
+
+        return transactions;
+    }
+
+    // Metodo para obtener el username del usuario autenticado
+    private String getAuthenticatedUsername() {
+        // SecurityContextHolder se utiliza para obtener el principal autenticado
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
+        } else {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuario no autenticado");
+        }
     }
 
     }

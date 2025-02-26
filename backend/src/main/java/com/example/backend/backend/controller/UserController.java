@@ -6,12 +6,16 @@ import com.example.backend.backend.dto.UserDTO;
 import com.example.backend.backend.model.UsersModel;
 import com.example.backend.backend.services.UserService;
 import jakarta.validation.Valid;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -19,14 +23,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
-    // Crear usuario
-    @PostMapping
-    public ResponseEntity<ApiResponse> addUser(@Valid @RequestBody UserDTO userDTO) {
-        UsersModel savedUser = userService.addUser(userDTO);
-        ApiResponse response = new ApiResponse("Usuario creado con éxito", savedUser);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
 
     // Obtener todos los usuarios
     @GetMapping
@@ -36,16 +32,25 @@ public class UserController {
 
     // Obtener usuario por ID
     @GetMapping("/{id}")
-    public UsersModel getUserById(@PathVariable String id) {
-        return userService.getUserById(id);
+    public ResponseEntity<ApiResponse> getUserById(@PathVariable String id) {
+
+        UserDTO userPartial = userService.getUserById(id);
+        ApiResponse response = new ApiResponse("Usuario obtenido correctamente", userPartial);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 
     // Actualizar usuario
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> updateUser(@PathVariable String id, @Valid @RequestBody UpdateUserDTO updateUserDTO) {
+
+        // Validar si el ID es un ObjectId válido antes de pasar al servicio
+        if (!ObjectId.isValid(id)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID inválido");
+        }
         UsersModel updatedUser = userService.updateUser(id, updateUserDTO);
-        ApiResponse response = new ApiResponse("usuario actualizado correctamente",updatedUser);
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        ApiResponse response = new ApiResponse("usuario actualizado correctamente", updatedUser);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // Eliminar usuario
@@ -56,4 +61,6 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
+
+
 }

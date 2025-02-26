@@ -64,4 +64,11 @@ public class TransactionController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
+
+    @GetMapping("/user/auth")
+    public ResponseEntity<List<TransactionsModel>> getAllTransactionsForAuthenticatedUser() {
+        List<TransactionsModel> transactions = transactionService.getAllTransactionsForAuthenticatedUser();
+        return ResponseEntity.ok(transactions);
+    }
+
 }

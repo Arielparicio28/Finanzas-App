@@ -2,6 +2,7 @@ package com.example.backend.backend.model;
 
 import com.example.backend.backend.enums.TransactionType;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
 
 @Document(collection = "transaction")
+@Data
 public class TransactionsModel
 {
 

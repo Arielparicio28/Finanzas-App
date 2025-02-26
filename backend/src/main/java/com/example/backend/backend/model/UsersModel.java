@@ -1,14 +1,27 @@
 package com.example.backend.backend.model;
 
+import com.example.backend.backend.config.ObjectIdDeserializer;
+import com.example.backend.backend.config.ObjectIdSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Document(collection = "users")
-public class UsersModel {
+@Data
+public class UsersModel implements UserDetails {
 
     @Id
+    @JsonSerialize(using = ObjectIdSerializer.class) // Serializador para ObjectId
+    @JsonDeserialize(using = ObjectIdDeserializer.class) // Deserializador para ObjectId
     private ObjectId id;
 
     private String username;
@@ -26,8 +39,38 @@ public class UsersModel {
         this.id = id;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    public String getPassword() {
+        return passwordHash;
+    }
+
     public String getUsername() {
         return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return UserDetails.super.isAccountNonExpired();
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return UserDetails.super.isAccountNonLocked();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return UserDetails.super.isCredentialsNonExpired();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return UserDetails.super.isEnabled();
     }
 
     public void setUsername(String username) {
