@@ -7,15 +7,19 @@ meta {
 post {
   url: http://localhost:8080/api/v1/transaction
   body: json
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKb25Eb2UiLCJpYXQiOjE3NDA5MjIwMDcsImV4cCI6MTc0MDkyNTYwN30.3ifS-qHrD0P_ZEECTq-_oyUVFoFUDrq0JWCwVITL7SI
 }
 
 body:json {
   {
-       "accountId":"67b482eb6c05104d0df8b230",
+       "accountId":"67c45cc2cfaf791067934978",
        "amount":"800",
        "type":"Debito",
        "category":"Fiesta",
-       "description":"robert"
+       "description":"Dia del amor"
   }
 }

@@ -1,9 +1,10 @@
-/*
+
 package com.example.backend.backend.controller;
 
 import com.example.backend.backend.dto.AccountDTO;
 import com.example.backend.backend.dto.ApiResponse;
 import com.example.backend.backend.dto.UpdateAccountDTO;
+import com.example.backend.backend.dto.UserDTO;
 import com.example.backend.backend.model.AccountModel;
 import com.example.backend.backend.model.UsersModel;
 import com.example.backend.backend.services.AccountService;
@@ -27,6 +28,7 @@ public class AccountController {
     @Autowired
     private UserService userService;
 
+
     @GetMapping
     public ResponseEntity<ApiResponse> getAllAccounts()
     {
@@ -45,7 +47,7 @@ public class AccountController {
 
     // Nuevo endpoint: obtener el usuario asociado a una cuenta
     @GetMapping("/{accountId}/user")
-    public ResponseEntity<UsersModel> getUserForAccount(@PathVariable String accountId) {
+    public ResponseEntity<ApiResponse> getUserForAccount(@PathVariable String accountId) {
         // Obtener la cuenta asociada
         AccountModel account = accountService.getUserByAccountId(accountId);
 
@@ -54,13 +56,13 @@ public class AccountController {
         }
 
         // Obtener el ObjectId del usuario desde la cuenta
-        ObjectId userId = (account.getUserId());
+        ObjectId userId = account.getUserId();
 
         // Buscar el usuario en la base de datos
-        UsersModel user = userService.getUserById(userId.toHexString())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+        UserDTO userDto = userService.getUserById(userId.toHexString());
 
-        return ResponseEntity.ok(user);
+        ApiResponse response = new ApiResponse("Usuario obtenido correctamente", userDto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     //Obtener una cuenta por su id
@@ -91,4 +93,3 @@ public class AccountController {
     }
 
 }
-*/

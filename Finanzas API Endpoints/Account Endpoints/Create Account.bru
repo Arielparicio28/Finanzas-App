@@ -7,11 +7,15 @@ meta {
 post {
   url: http://localhost:8080/api/v1/accounts
   body: json
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKb25Eb2UiLCJpYXQiOjE3NDA5MjIwMDcsImV4cCI6MTc0MDkyNTYwN30.3ifS-qHrD0P_ZEECTq-_oyUVFoFUDrq0JWCwVITL7SI
 }
 
 body:json {
-  {     "userId": "67b47fd7d8561d58f738dcf9",
+  {     "userId": "67c45c93cfaf791067934977",
         "accountType": "Ahorro",
         "balance": 3400.5,
         "currency": "Eur"
