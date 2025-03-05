@@ -1,5 +1,6 @@
 package com.example.backend.backend.services;
 
+import com.example.backend.backend.annotation.GetAuthenticatedUser;
 import com.example.backend.backend.dto.AccountDTO;
 import com.example.backend.backend.dto.UpdateAccountDTO;
 import com.example.backend.backend.model.AccountModel;
@@ -8,6 +9,7 @@ import com.example.backend.backend.repository.AccountRepository;
 import com.example.backend.backend.repository.TransactionRepository;
 import com.example.backend.backend.repository.UserRepository;
 import com.example.backend.backend.util.CardNumberGenerator;
+import com.example.backend.backend.util.SecurityUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,23 +40,17 @@ public class AccountService {
     }
 
     //Metodo para crear una cuenta
+    @GetAuthenticatedUser
     public AccountModel createAccount(AccountDTO accountDTO) {
         try {
-            // Validar que el ID del usuario sea un ObjectId válido
-            if (!ObjectId.isValid(accountDTO.getUserId())) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID de usuario inválido");
-            }
-
-            // Convertir el userId de String a ObjectId
-            ObjectId userIdObj = new ObjectId(accountDTO.getUserId());
-
-            // Verificar si el usuario existe en la base de datos
-            UsersModel user = userRepository.findById(userIdObj)
+            // Asignar el ID del usuario autenticado utilizando el aspecto AOP
+            String username = SecurityUtils.getAuthenticatedUsername();
+            UsersModel user = userRepository.findByUsername(username)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
 
             // Crear la cuenta y asignar los valores
             AccountModel account = new AccountModel();
-            account.setUserId(userIdObj); // Asignar el ObjectId del usuario
+            account.setUserId(user.getId()); // Asignar el ObjectId del usuario
             account.setAccountNumber(CardNumberGenerator.generateCardNumber()); // Generar número de cuenta
             account.setAccountType(accountDTO.getAccountType());
             account.setBalance(accountDTO.getBalance());

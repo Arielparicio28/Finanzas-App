@@ -1,5 +1,6 @@
 package com.example.backend.backend.services;
 
+import com.example.backend.backend.annotation.GetAuthenticatedUser;
 import com.example.backend.backend.dto.TransactionsDTO;
 import com.example.backend.backend.enums.TransactionType;
 import com.example.backend.backend.model.*;
@@ -7,6 +8,7 @@ import com.example.backend.backend.repository.AccountRepository;
 import com.example.backend.backend.repository.BudgetRepository;
 import com.example.backend.backend.repository.TransactionRepository;
 import com.example.backend.backend.repository.UserRepository;
+import com.example.backend.backend.util.SecurityUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -189,9 +191,10 @@ public class TransactionService {
     }
 
     // Obtener todas las transacciones del usuario autenticado
+    @GetAuthenticatedUser
     public List<TransactionsModel> getAllTransactionsForAuthenticatedUser() {
         // Obtén el principal (usuario autenticado) desde el contexto de seguridad
-        String username = getAuthenticatedUsername();
+        String username = SecurityUtils.getAuthenticatedUsername();
         UsersModel user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
 
@@ -215,17 +218,6 @@ public class TransactionService {
         return transactions;
     }
 
-    // Metodo para obtener el username del usuario autenticado
-    private String getAuthenticatedUsername() {
-        // SecurityContextHolder se utiliza para obtener el principal autenticado
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (principal instanceof UserDetails) {
-            return ((UserDetails) principal).getUsername();
-        } else {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuario no autenticado");
-        }
-    }
 
     private Period calculateCurrentPeriod() {
         LocalDate start = LocalDate.now().withDayOfMonth(1);

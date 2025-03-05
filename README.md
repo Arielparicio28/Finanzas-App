@@ -27,3 +27,6 @@ Si un atacante obtiene ese token, puede seguir usándolo.
 1.Un usuario inicia sesión y obtiene un token.
 2.Al hacer logout, el backend agrega su token a la lista negra.
 3.Si el usuario o un atacante intenta usar ese token, el backend lo rechaza automáticamente.
+
+¿Qué es AOP?
+Es un patrón que permite ejecutar lógica automáticamente antes o después de los métodos sin necesidad de repetir código.

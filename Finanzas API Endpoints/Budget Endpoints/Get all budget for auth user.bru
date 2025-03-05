@@ -1,23 +1,15 @@
 meta {
-  name: Create Account
+  name: Get all budget for auth user
   type: http
   seq: 2
 }
 
-post {
-  url: http://localhost:8080/api/v1/accounts
-  body: json
+get {
+  url: http://localhost:8080/api/v1/budget
+  body: none
   auth: bearer
 }
 
 auth:bearer {
   token: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBcmllbCIsImlhdCI6MTc0MTE3OTQ1OCwiZXhwIjoxNzQxMTgzMDU4fQ.UjAg5v6zdnUVW2T6lunHSI9lLDxJa6M69GrAGbwrL80
-}
-
-body:json {
-  {
-        "accountType": "Ahorro",
-        "balance": 102.97,
-        "currency": "Eur"
-  }
 }

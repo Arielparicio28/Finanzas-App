@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/budget")
 public class BudgetController {
@@ -22,5 +24,11 @@ public class BudgetController {
         BudgetModel budget = budgetService.createBudget(budgetDTO);
         ApiResponse response = new ApiResponse("Presupuesto creado con éxito", budget);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<BudgetModel>>getAllBudgetForAuthUser() {
+        List<BudgetModel> budgets = budgetService.getAllBudgetForAuthUser();
+        return ResponseEntity.ok(budgets);
     }
 }

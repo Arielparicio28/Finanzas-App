@@ -7,9 +7,6 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 public class BudgetDTO {
 
-    @NotBlank(message = "El ID del usuario es obligatorio")
-    private String userId;  // Recibido como String, luego se convertirá a ObjectId
-
     @NotNull(message = "Categorias es obligatoria")
     private Category category;
 
@@ -29,15 +26,6 @@ public class BudgetDTO {
         this.spent = spent;
     }
 
-
-
-    public @NotBlank(message = "El ID del usuario es obligatorio") String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(@NotBlank(message = "El ID del usuario es obligatorio") String userId) {
-        this.userId = userId;
-    }
 
     public @NotNull(message = "El limite de gasto por mes es obligatorio ") @PositiveOrZero(message = "El límite debe ser positivo o cero") Double getLimit() {
         return limit;
