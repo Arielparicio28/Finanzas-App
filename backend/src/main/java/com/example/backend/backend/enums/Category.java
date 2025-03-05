@@ -14,6 +14,7 @@ public enum Category {
     EDUCACION("Educación"),
     SALUD("Salud"),
     SERVICIOS("Servicios"),
+    SALARIO("Salario"),
     OTROS("Otros");
 
     private final String value;

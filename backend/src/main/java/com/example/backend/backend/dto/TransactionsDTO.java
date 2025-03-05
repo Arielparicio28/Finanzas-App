@@ -1,6 +1,7 @@
 package com.example.backend.backend.dto;
 
 
+import com.example.backend.backend.enums.Category;
 import com.example.backend.backend.enums.TransactionType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,8 +19,16 @@ public class TransactionsDTO
     @NotNull(message = "Transaction type es de tipo Credito | Debito ")
     private TransactionType type;
 
-    @NotBlank(message = "Categoria del gasto alimentacion,ocio,salario, factura,etc.")
-    private String category;
+    public @NotNull(message = "Categoria del gasto alimentacion,ocio,salario, factura,etc.") Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(@NotNull(message = "Categoria del gasto alimentacion,ocio,salario, factura,etc.") Category category) {
+        this.category = category;
+    }
+
+    @NotNull(message = "Categoria del gasto alimentacion,ocio,salario, factura,etc.")
+    private Category category;
 
 
     private String description;
@@ -48,13 +57,6 @@ public class TransactionsDTO
         this.type = type;
     }
 
-    public @NotBlank(message = "Categoria del gasto alimentacion,ocio,salario, factura,etc.") String getCategory() {
-        return category;
-    }
-
-    public void setCategory(@NotBlank(message = "Categoria del gasto alimentacion,ocio,salario, factura,etc.") String category) {
-        this.category = category;
-    }
 
     public String getDescription() {
         return description;

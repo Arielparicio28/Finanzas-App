@@ -1,5 +1,6 @@
 package com.example.backend.backend.model;
 
+import com.example.backend.backend.enums.Category;
 import com.example.backend.backend.enums.TransactionType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -24,7 +25,16 @@ public class TransactionsModel
 
     private Double amount; // positivo para ingreso y negativo para gastos
     private TransactionType type; // Credito o debito
-    private String category; //categoria del gasto alimentacion,ocio,salario, factura,etc.
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    private Category category; //categoria del gasto alimentacion,ocio,salario, factura,etc.
     private String description;
 
     //Getters and Setter
@@ -70,13 +80,6 @@ public class TransactionsModel
         this.type = type;
     }
 
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
 
     public String getDescription() {
         return description;

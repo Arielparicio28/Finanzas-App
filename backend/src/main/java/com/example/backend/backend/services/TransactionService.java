@@ -2,10 +2,9 @@ package com.example.backend.backend.services;
 
 import com.example.backend.backend.dto.TransactionsDTO;
 import com.example.backend.backend.enums.TransactionType;
-import com.example.backend.backend.model.AccountModel;
-import com.example.backend.backend.model.TransactionsModel;
-import com.example.backend.backend.model.UsersModel;
+import com.example.backend.backend.model.*;
 import com.example.backend.backend.repository.AccountRepository;
+import com.example.backend.backend.repository.BudgetRepository;
 import com.example.backend.backend.repository.TransactionRepository;
 import com.example.backend.backend.repository.UserRepository;
 import org.bson.types.ObjectId;
@@ -16,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,6 +31,9 @@ public class TransactionService {
 
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
+    BudgetRepository budgetRepository;
 
     // Obtener todas las transacciones
     public List<TransactionsModel> getAllTransaction() {
@@ -61,12 +64,10 @@ public class TransactionService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cuenta no encontrada"));
         try
         {
-            double newBalance;
-
             if (transactionsDTO.getAmount() == 0) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El amount no puede ser 0");
             }
-
+            double newBalance;
             // Validar saldo antes de guardar la transacción
             if (transactionsDTO.getType() == TransactionType.CREDITO) {
                 newBalance = account.getBalance() + transactionsDTO.getAmount();
@@ -97,6 +98,27 @@ public class TransactionService {
             account.setBalance(newBalance);
             account.setUpdatedAt(new Date());
             accountRepository.save(account);
+
+            // Actualizar presupuesto (solo para transacciones de débito)
+            if (transactionsDTO.getType() == TransactionType.DEBITO) {
+                // Obtener el período actual
+                Period currentPeriod = calculateCurrentPeriod();
+                // Buscar el presupuesto correspondiente para el usuario, categoría y período
+                BudgetModel budget = budgetRepository.findByUserIdAndCategoryAndPeriod(
+                        account.getUserId(),
+                        transactionsDTO.getCategory(),
+                        currentPeriod
+                ).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontró presupuesto para el usuario en el período actual"));
+
+                // Actualizar el campo spent (suponiendo que spent inicia en 0)
+                double nuevoSpent = (budget.getSpent() != null ? budget.getSpent() : 0) + transactionsDTO.getAmount();
+                // Validar que el nuevo valor no supere el límite.
+                if (nuevoSpent > budget.getLimit()) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El gasto supera el límite del presupuesto");
+                }
+                budget.setSpent(nuevoSpent);
+                budgetRepository.save(budget);
+            }
 
             return savedTransaction;
         } catch (ResponseStatusException e) {
@@ -205,5 +227,11 @@ public class TransactionService {
         }
     }
 
+    private Period calculateCurrentPeriod() {
+        LocalDate start = LocalDate.now().withDayOfMonth(1);
+        LocalDate end = LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth());
+        return new Period(start, end);
     }
 
+
+}
