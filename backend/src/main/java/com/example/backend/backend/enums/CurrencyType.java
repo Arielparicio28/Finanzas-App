@@ -29,13 +29,4 @@ public enum CurrencyType {
         throw new IllegalArgumentException("No enum constant for value: " + value);
     }
 
-
-
-
-
-
-
-
-
-
 }
