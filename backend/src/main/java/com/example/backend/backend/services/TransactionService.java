@@ -63,6 +63,10 @@ public class TransactionService {
         {
             double newBalance;
 
+            if (transactionsDTO.getAmount() == 0) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El amount no puede ser 0");
+            }
+
             // Validar saldo antes de guardar la transacción
             if (transactionsDTO.getType() == TransactionType.CREDITO) {
                 newBalance = account.getBalance() + transactionsDTO.getAmount();
@@ -72,6 +76,7 @@ public class TransactionService {
                 if (newBalance < 0) {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Saldo insuficiente para realizar la transacción");
                 }
+
             } else {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tipo de transacción inválido");
             }
