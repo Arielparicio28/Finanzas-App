@@ -1,4 +1,4 @@
-# Practica-Hakaton-2025
+# Finanzas-App-2025
 
 🔒 Cómo Funciona la Lista Negra
 
