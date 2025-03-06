@@ -11,10 +11,23 @@ public class BudgetExceededEvent extends ApplicationEvent {
     private final Double spent;
     private final Double limit;
 
+    public Double getSpent() {
+        return spent;
+    }
+
+    public ObjectId getUserId() {
+        return userId;
+    }
+
+    public Double getLimit() {
+        return limit;
+    }
+
     public BudgetExceededEvent(Object source, ObjectId userId, Double spent, Double limit) {
         super(source);
         this.userId = userId;
         this.spent = spent;
         this.limit = limit;
     }
+
 }

@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
@@ -60,6 +61,7 @@ public class TransactionService {
     }
 
     //Crear una transaccion.
+    @Transactional
     public TransactionsModel createTransaction(TransactionsDTO transactionsDTO)
     {
         AccountModel account = accountRepository.findById(new ObjectId(transactionsDTO.getAccountId()))

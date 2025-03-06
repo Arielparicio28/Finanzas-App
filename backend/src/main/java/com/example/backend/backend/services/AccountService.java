@@ -40,6 +40,7 @@ public class AccountService {
     }
 
     //Metodo para crear una cuenta
+    //Spring usa los proxies dinámicos y AOP para interceptar esa anotación antes o después de la ejecución del metodo.
     @GetAuthenticatedUser
     public AccountModel createAccount(AccountDTO accountDTO) {
         try {
